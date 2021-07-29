@@ -1,7 +1,8 @@
 # zen_cc_search 
 
-![workflow](https://github.com/maoyalu/zen_cc_search/actions/workflows/ci.yml/badge.svg?branch=main)
-[![Coverage Status](https://coveralls.io/repos/github/maoyalu/zen_cc_search/badge.svg?branch=main)](https://coveralls.io/github/maoyalu/zen_cc_search?branch=main)
+![Build Status](https://github.com/maoyalu/zen_cc_search/workflows/test/badge.svg)
+![workflow](https://github.com/maoyalu/zen_cc_search/actions/workflows/ci.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/maoyalu/zen_cc_search/badge.svg?branch=main)](https://coveralls.io/github/maoyalu/zen_cc_search)
 
 Submission for Coding Challenge
 
