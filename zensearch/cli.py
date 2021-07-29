@@ -14,5 +14,9 @@ def main(input_directory):
     """
     click.echo(input_directory)
 
+def init123():
+    print('package working')
+    return True
+
 if __name__ == '__main__':
     main()
