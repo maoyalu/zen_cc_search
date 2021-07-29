@@ -1,4 +1,4 @@
-from zensearch.data.database import *
+from zensearch.database import *
 
 
 def main():
@@ -8,4 +8,4 @@ def main():
 if __name__ == '__main__':
     db = Database()
     db.init()
-    print(db.tickets)
+    print(db.search_user_id(1))
