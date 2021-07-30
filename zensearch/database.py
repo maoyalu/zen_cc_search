@@ -18,8 +18,6 @@ class Database:
         self.cache_ticket_assignee_id = {}
         self.cache_ticket_tags = {}
 
-        self.init()
-
     # region Initialization
 
     def init(self):

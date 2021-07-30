@@ -9,6 +9,9 @@ class App:
 
     def run(self):
         """Start app"""
+        # Load up data
+        self.db.init()
+
         # Entry point
         while True:
             self.main()

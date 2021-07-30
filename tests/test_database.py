@@ -18,8 +18,9 @@ def test_database_ticket_init():
     db = Database()
     assert db.users is None
     assert db.tickets is None
+    # tickets need to be initialized after users
+    db.user_init()
     db.ticket_init()
-    assert db.users is None
     assert db.tickets is not None
 
 def test_database_init():
