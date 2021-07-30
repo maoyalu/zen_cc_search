@@ -1,5 +1,5 @@
 import click
-from zensearch.constants import UserParam, TicketParam
+from zensearch.constants import UserParam, TicketParam, SearchTarget
 
 
 class CLI:
@@ -44,12 +44,14 @@ Search options:
         """Display searchable fields for users and tickets."""
         click.echo("""
 ----------------------
-Search Users with
+Search {} with
 {}
 ----------------------
-Search Tickets with
+Search {} with
 {}
-----------------------""".format(UserParam.display(),
+----------------------""".format(SearchTarget.USERS.value,
+                                 UserParam.display(),
+                                 SearchTarget.TICKETS.value,
                                  TicketParam.display()
                                 ))
 
@@ -68,66 +70,14 @@ Search Tickets with
         """
         click.echo("""
 Press the number to search:
- 1) Users
- 2) Tickets
-        """)
+ 1) {}
+ 2) {}
+        """.format(SearchTarget.USERS.value, SearchTarget.TICKETS.value))
         op = click.prompt('Select options')
         if self.is_quit(op):
             return None
         else:
             return op
-
-    def search_user(self):
-        """ZENDESK search - Users search page."""
-        click.echo("""
-----------------------
-Search Users with
-{}
-----------------------""".format(UserParam.display()))
-        field = click.prompt('Enter field number')
-        if self.is_quit(field):
-            return None, None
-        # Ensure the number given can be lookup in the param enum
-        elif self.is_valid_field(field, UserParam):
-            value = click.prompt('Enter value', default="", show_default=False)
-            if self.is_quit(value):
-                return None, None
-            else:
-                click.echo('Searching Users for {0} with a value of {1}'.format(
-                            UserParam(int(field)).name.lower(), 
-                            value if value else '(null)')
-                        )
-                return field, value
-        else:
-            self.error_invalid_option()
-            self.wait()
-            return None, None
-
-    def search_ticket(self):
-        """ZENDESK search - Tickets search page."""
-        click.echo("""
-----------------------
-Search Tickets with
-{}
-----------------------""".format(TicketParam.display()))
-        field = click.prompt('Enter field number')
-        if self.is_quit(field):
-            return None, None
-        # Ensure the number given can be lookup in the param enum
-        elif self.is_valid_field(field, TicketParam):
-            value = click.prompt('Enter value', default="", show_default=False)
-            if self.is_quit(value):
-                return None, None
-            else:
-                click.echo('Searching Users for {0} with a value of {1}'.format(
-                            TicketParam(int(field)).name.lower(), 
-                            value if value else '(null)')
-                        )
-                return field, value
-        else:
-            self.error_invalid_option()
-            self.wait()
-            return None, None
 
     def search_target(self, target, param_enum):
         click.echo("""
@@ -140,13 +90,14 @@ Search {0} with
             return None, None
         # Ensure the number given can be lookup in the param enum
         elif self.is_valid_field(field, param_enum):
+            field = int(field)
             value = click.prompt('Enter value', default="", show_default=False)
             if self.is_quit(value):
                 return None, None
             else:
                 click.echo('Searching {0} for {1} with a value of {2}'.format(
                             target,
-                            param_enum(int(field)).name.lower(), 
+                            param_enum(field).name.lower(), 
                             value if value else '(null)')
                         )
                 return field, value
@@ -190,6 +141,3 @@ Search {0} with
         except:
             return False
 
-if __name__ == '__main__':
-    cli = CLI()
-    cli.search_target('Users', UserParam)

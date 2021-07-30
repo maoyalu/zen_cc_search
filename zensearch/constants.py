@@ -26,3 +26,7 @@ class TicketParam(Enum):
     SUBJECT = 4
     ASSIGNEE_ID = 5
     TAGS = 6
+
+class SearchTarget(Enum):
+    USERS = 'Users'
+    TICKETS = 'Tickets'

@@ -7,11 +7,11 @@ class Database:
     def __init__(self) -> None:
         self.users = None
         self.tickets = None
-
+        # User cache
         self.cache_user_created_at = {}
         self.cache_user_name = {}
         self.cache_user_verified = {}
-
+        # Ticket cache
         self.cache_ticket_created_at = {}
         self.cache_ticket_type = {}
         self.cache_ticket_subject = {}
@@ -135,19 +135,25 @@ class Database:
 
     def search_user_id(self, _id):
         if _id in self.users:
-            return self.users[_id]
+            return [self.users[_id]]
         else:
             return None
 
     def search_user_name(self, name):
         if CACHE_USER_NAME:
-            return self.cache_user_name[name]
+            if name in self.cache_user_name:
+                return self.cache_user_name[name]
+            else:
+                return None
         else:
             return [user for user in self.users.values() if user.name == name]
 
     def search_user_created_at(self, created_at):
         if CACHE_USER_CREATED_AT:
-            return self.cache_user_created_at[created_at]
+            if created_at in self.cache_user_created_at:
+                return self.cache_user_created_at[created_at]
+            else:
+                return None
         else:
             return [user for user in self.users.values() if user.created_at == created_at]
 
@@ -163,39 +169,55 @@ class Database:
 
     def search_ticket_id(self, _id):
         if _id in self.tickets:
-            return self.tickets[_id]
+            return [self.tickets[_id]]
         else:
             return None
 
     def search_ticket_created_at(self, created_at):
         if CACHE_TICKET_CREATED_AT:
-            return self.cache_ticket_created_at[created_at]
+            if created_at in self.cache_user_created_at:
+                return self.cache_ticket_created_at[created_at]
+            else:
+                return None
         else:
             return [ticket for ticket in self.tickets.values() if ticket.created_at == created_at]
 
     def search_ticket_type(self, type):
         if CACHE_TICKET_TYPE:
-            return self.cache_ticket_type[type]
+            if type in self.cache_ticket_type:
+                return self.cache_ticket_type[type]
+            else:
+                return None
         else:
             return [ticket for ticket in self.tickets.values() if ticket.type == type]
 
     def search_ticket_subject(self, subject):
         if CACHE_TICKET_SUBJECT:
-            return self.cache_ticket_subject[subject]
+            if subject in self.cache_ticket_subject:
+                return self.cache_ticket_subject[subject]
+            else:
+                return None
         else:
             return [ticket for ticket in self.tickets.values() if ticket.subject == subject]
 
     def search_ticket_assignee_id(self, a_id):
         if CACHE_TICKET_ASSIGNEE_ID:
-            return self.cache_ticket_assignee_id[a_id]
+            if a_id in self.cache_ticket_assignee_id:
+                return self.cache_ticket_assignee_id[a_id]
+            else:
+                return None
         else:
             return [ticket for ticket in self.tickets.values() if ticket.assignee_id == a_id]
 
     def search_ticket_tags(self, tag):
         if CACHE_TICKET_TAGS:
-            return self.cache_ticket_tags[tag]
+            if tag in self.cache_ticket_tags:
+                return self.cache_ticket_tags[tag]
+            else:
+                return None
         else:
             return [ticket for ticket in self.tickets.values() if tag in ticket.tags]
+    
     # endregion Search - Ticket
 
 
@@ -211,10 +233,10 @@ class User:
         if ticket not in self.tickets:
             self.tickets.append(ticket)
     
-    # def __str__(self):
-    #     headers = ['_id', 'name', 'created_at', 'verified']
-    #     data = [[self._id, self.name, self.created_at, self.verified]]
-    #     return columnar(data, headers, no_borders=True)
+    def __str__(self):
+        headers = ['_id', 'name', 'created_at', 'verified']
+        data = [[self._id, self.name, self.created_at, self.verified]]
+        return columnar(data, headers, no_borders=True)
 
 
 class Ticket:
@@ -225,4 +247,9 @@ class Ticket:
         self.tags = tags
         self.type = type
         self.assignee_id = assignee_id
+    
+    def __str__(self) -> str:
+        headers = ['_id', 'created_at', 'subject', 'tags', 'type', 'assignee_id']
+        data = [[self._id, self.created_at, self.subject, self.tags, self.type, self.assignee_id]]
+        return columnar(data, headers, no_borders=True)
     

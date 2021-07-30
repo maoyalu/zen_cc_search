@@ -47,9 +47,39 @@ python -m zensearch
 
 1. **Configure cache settings.**
 
-    `zensearch/config.py` stores configs that enable reverse index. If it is set to `true`, additionally spaces will be allocated for faster lookup, accelerating the search from `O(n)` to `O(1)`.
+    `zensearch/config.py` stores configs that enable reverse index. If it is set to `true`, additional spaces will be allocated for faster lookup, accelerating the search from `O(n)` to `O(1)`.
 
     To make new configs effective, you need to restart the app.
+
+2. **Quit anytime.**
+
+    Type `quit` into the prompt and hit `ENTER` anytime, ane then the program will request your confirmation for exit.
+
+    `Y` - Exit
+
+    `N` (default) - Cancel and go back to the main page
+
+3. **Select options**
+
+    Option list will be provided above the prompt.
+
+    Select the option number and hit `ENTER`. If the option number is invalid, an error message will be shown.
+
+4. **Search for the value**
+
+    Empty value is supported.
+    
+    Simply hit `ENTER` without typing anything.
+
+5. **Navigation**
+
+    ```
+    Main
+     |----- Search
+     |       |----- Users
+     |       |----- Tickets
+     |
+     |----- View Searchable Fields
 
 ## Tradeoffs
 
