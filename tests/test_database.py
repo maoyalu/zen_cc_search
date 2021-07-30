@@ -34,9 +34,9 @@ def test_database_init():
 def test_search_user_id():
     db = Database()
     db.init()
-    assert db.search_user_id(1)._id == 1
-    assert db.search_user_id(2).name == "Cross Barlow"
-    assert db.search_user_id(3).created_at == "2016-07-28T05:29:25-10:00"
-    assert db.search_user_id(4).verified == True
+    assert all(x._id == 1 for x in db.search_user_id(1))
+    assert all(x.name == "Cross Barlow" for x in db.search_user_id(2))
+    assert all(x.created_at == "2016-07-28T05:29:25-10:00" for x in db.search_user_id(3))
+    assert all(x.verified == True for x in db.search_user_id(4))
     assert db.search_user_id(0) is None
     assert db.search_user_id(76) is None
