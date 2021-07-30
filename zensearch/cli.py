@@ -8,7 +8,7 @@ class CLI:
 
     def main(self):
         """ZENDESK search - main page.
-        
+
         Returned options:
 
             1 - zendesk search
@@ -53,13 +53,13 @@ Search {} with
                                  UserParam.display(),
                                  SearchTarget.TICKETS.value,
                                  TicketParam.display()
-                                ))
+                                 ))
 
         self.wait()
 
     def search(self):
         """ZENDESK search - search page.
-        
+
         Returned options:
 
             1 - Users
@@ -95,16 +95,19 @@ Search {0} with
             if self.is_quit(value):
                 return None, None
             else:
-                click.echo('Searching {0} for {1} with a value of {2}'.format(
-                            target,
-                            param_enum(field).name.lower(), 
-                            value if value else '(null)')
-                        )
+                click.echo('Searching {0} for {1} with a value of {2}...\n'.format(
+                    target,
+                    param_enum(field).name.lower(),
+                    value if value else '(null)')
+                )
                 return field, value
         else:
             self.error_invalid_option()
-            self.wait()
             return None, None
+
+    def display_search_result(self, result):
+        click.echo(result)
+        self.wait()
 
     def exit(self):
         """Require confirmation before exiting app."""
@@ -115,17 +118,18 @@ Search {0} with
             # Take users back to the main page
             # Potentially we can let users remain in the same page to continue
             click.clear()
-    
+
     def error_invalid_option(self):
         """Prompt error to user that the input option is invalid."""
         click.echo('\n[ERROR] The selected option does not exist.')
+        self.wait()
 
     def wait(self):
         """Stop the app and press ENTER to continue."""
         click.confirm('\nPress <ENTER> to continue',
-                        default=True,
-                        prompt_suffix='', 
-                        show_default=False)
+                      default=True,
+                      prompt_suffix='',
+                      show_default=False)
 
     def is_quit(self, op):
         """Check every prompt input for quit request."""
@@ -140,4 +144,3 @@ Search {0} with
             return op in set(p.value for p in param_enum)
         except:
             return False
-

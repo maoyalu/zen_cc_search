@@ -3,6 +3,7 @@ from columnar import columnar
 from zensearch.constants import USER_JSON, TICKET_JSON
 from zensearch.config import *
 
+
 class Database:
     def __init__(self) -> None:
         self.users = None
@@ -24,7 +25,7 @@ class Database:
         '''Initialize databases'''
         self.user_init()
         self.ticket_init()
-    
+
     def user_init(self):
         '''Initialize user data'''
         user_dict = {}
@@ -59,7 +60,9 @@ class Database:
                 assignee_id = ticket.get('assignee_id', None)
                 tags = ticket['tags']
                 # Create a new Ticket
-                new_ticket = Ticket(_id, created_at, subject, tags, type_of, assignee_id)
+                new_ticket = Ticket(_id, created_at, subject,
+                                    tags, type_of, assignee_id)
+                new_ticket.assignee = self.users.get(assignee_id, None)
                 ticket_dict[_id] = new_ticket
                 # Check if we need to cache the ticket in other ways
                 self.cache_ticket(new_ticket)
@@ -69,21 +72,21 @@ class Database:
             self.tickets = ticket_dict
 
     def cache_user(self, user):
-        # A user list by the given created_at 
+        # A user list by the given created_at
         if CACHE_USER_CREATED_AT:
             if user.created_at in self.cache_user_created_at:
                 self.cache_user_created_at[user.created_at].append(user)
             else:
                 self.cache_user_created_at[user.created_at] = [user]
 
-        # A user list by the given name 
+        # A user list by the given name
         if CACHE_USER_NAME:
             if user.name in self.cache_user_name:
                 self.cache_user_name[user.name].append(user)
             else:
                 self.cache_user_name[user.name] = [user]
 
-        # A user list by the given verified 
+        # A user list by the given verified
         if CACHE_USER_VERIFIED:
             if user.verified in self.cache_user_verified:
                 self.cache_user_verified[user.verified].append(user)
@@ -115,7 +118,8 @@ class Database:
         # A ticket list by the given assignee_id
         if CACHE_TICKET_ASSIGNEE_ID:
             if ticket.assignee_id in self.cache_ticket_assignee_id:
-                self.cache_ticket_assignee_id[ticket.assignee_id].append(ticket)
+                self.cache_ticket_assignee_id[ticket.assignee_id].append(
+                    ticket)
             else:
                 self.cache_ticket_assignee_id[ticket.assignee_id] = [ticket]
 
@@ -164,7 +168,7 @@ class Database:
             return [user for user in self.users.values() if user.verified == verified]
 
     # endregion Search - User
-    
+
     # region Search - Ticket
 
     def search_ticket_id(self, _id):
@@ -217,7 +221,7 @@ class Database:
                 return None
         else:
             return [ticket for ticket in self.tickets.values() if tag in ticket.tags]
-    
+
     # endregion Search - Ticket
 
 
@@ -232,7 +236,7 @@ class User:
     def assign(self, ticket):
         if ticket not in self.tickets:
             self.tickets.append(ticket)
-    
+
     def __str__(self):
         headers = ['_id', 'name', 'created_at', 'verified']
         data = [[self._id, self.name, self.created_at, self.verified]]
@@ -247,9 +251,11 @@ class Ticket:
         self.tags = tags
         self.type = type
         self.assignee_id = assignee_id
-    
+        self.assignee = None
+
     def __str__(self) -> str:
-        headers = ['_id', 'created_at', 'subject', 'tags', 'type', 'assignee_id']
-        data = [[self._id, self.created_at, self.subject, self.tags, self.type, self.assignee_id]]
+        headers = ['_id', 'created_at', 'subject',
+                   'tags', 'type', 'assignee_id']
+        data = [[self._id, self.created_at, self.subject,
+                 self.tags, self.type, self.assignee_id]]
         return columnar(data, headers, no_borders=True)
-    

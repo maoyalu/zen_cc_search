@@ -2,6 +2,7 @@ from zensearch.database import *
 from zensearch.cli import *
 from zensearch.constants import UserParam, TicketParam, SearchTarget
 
+
 class App:
     def __init__(self) -> None:
         self.cli = CLI()
@@ -31,7 +32,6 @@ class App:
             # Show error if the option is invalid
             else:
                 self.cli.error_invalid_option()
-                self.cli.wait()
 
     def search(self):
         """Search controller"""
@@ -52,10 +52,8 @@ class App:
                         SearchTarget.TICKETS.value: self.search_ticket
                     }
                     search_function[target](term, value)
-                    self.cli.wait()
             else:
                 self.cli.error_invalid_option()
-                self.cli.wait()
                 self.search()
 
     def search_user(self, field_num, value):
@@ -71,14 +69,24 @@ class App:
         elif field == UserParam.VERIFIED:
             value = self.value_to_bool(value)
             users = self.db.search_user_verified(value)
+        self.show_user_result(users)
+
+    def show_user_result(self, users):
+        result = 'No user found'
         # Check if any user is found
         if users:
-            # Display result
+            # Prepare display result
+            headers = ['_id', 'name', 'created_at', 'verified', 'tickets']
+            data = []
             for user in users:
-                print(user)
-        else:
-            print('No user found')
-        print('Search successful! - {}: {}'. format(UserParam(field_num).name, value))
+                data.append([user._id,
+                             user.name,
+                             user.created_at,
+                             user.verified,
+                             '\n'.join([t.subject for t in user.tickets])
+                             ])
+            result = columnar(data, headers)
+        self.cli.display_search_result(result)
 
     def search_ticket(self, field_num, value):
         """Search ticket controller"""
@@ -100,13 +108,29 @@ class App:
             tickets = self.db.search_ticket_assignee_id(value)
         elif field == TicketParam.TAGS:
             tickets = self.db.search_ticket_tags(value)
+        self.show_ticket_result(tickets)
+
+    def show_ticket_result(self, tickets):
+        result = 'No ticket found'
         # Check if any ticket is found
         if tickets:
+            # Prepare display result
+            headers = ['_id', 'created_at', 'type', 'subject',
+                       'assignee_id', 'tags', 'assignee_name']
+            data = []
             for ticket in tickets:
-                print(ticket)
-        else:
-            print('No ticket found')
-        print('Search successful! - {}: {}'. format(TicketParam(field_num).name, value))
+                assignee_name = None
+                if ticket.assignee:
+                    assignee_name = ticket.assignee.name
+                data.append([ticket._id,
+                             ticket.created_at,
+                             ticket.type,
+                             ticket.subject,
+                             ticket.assignee_id,
+                             '\n'.join(ticket.tags),
+                             assignee_name])
+            result = columnar(data, headers)
+        self.cli.display_search_result(result)
 
     def view_searchable_fields(self):
         """Fields controller"""
@@ -119,7 +143,6 @@ class App:
         # Show error if the option is invalid
         else:
             self.cli.error_invalid_option()
-            self.cli.wait()
             if redirect:
                 redirect()
 
@@ -140,7 +163,7 @@ class App:
 
     # endregion validations
 
-    
+
 if __name__ == '__main__':
     app = App()
     app.run()

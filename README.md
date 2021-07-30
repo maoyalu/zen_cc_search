@@ -87,7 +87,7 @@ python -m zensearch
 
     This feature can be switched off or partially enabled depending on users' actual situation.
 
-    By defulat, `_id` is automatically cached and it's **disabled** for other fields.
+    By defulat, this feature is **enabled**.
 
 ## Assumptions
 
@@ -159,3 +159,10 @@ Uses MVC structure to reduce coupling.
     It can reduce startup time and memory used in runtime comparing to the current cache strategy.
 
     This can be beneficial if the number of frequently searched items is very small.
+
+3. Advanced search
+
+    Current version only implements searching with one single field.
+
+    Searches with a combination of fields generally take `O(n)` time. 
+
