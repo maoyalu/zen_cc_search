@@ -7,6 +7,20 @@ Submission for Coding Challenge
 
 ---
 
+## Prerequisites
+
+1. To run this CLI application, you should have `Python 3.x` and `pip` installed and configured to use.
+
+    You can download it here:
+
+    https://www.python.org/downloads/
+
+2. `git` for downloading code and version control.
+    
+    You can download it here:
+
+    https://git-scm.com/downloads
+
 ## How to install
 
 1. Clone and go into the root directory
@@ -31,19 +45,29 @@ python -m zensearch
 
 ## How to use
 
-???
+1. **Configure cache settings.**
+
+    `zensearch/config.py` stores configs that enable reverse index. If it is set to `true`, additionally spaces will be allocated for faster lookup, accelerating the search from `O(n)` to `O(1)`.
+
+    To make new configs effective, you need to restart the app.
 
 ## Tradeoffs
 
-1. In order to approach O(1) time as much as possible, additional spaces are allocated. Searching generally will take O(n) time so perform lookups to prevent searching if possible.
+1. In order to approach O(1) time as much as possible, additional spaces are allocated. Searching generally will take O(n) time so perform lookups to prevent searching if possible. 
+
+    This feature can be switched off or partially enabled depending on users' actual situation.
+
+    By defulat, `_id` is automatically cached and it's **disabled** for other fields.
 
 ## Assumptions
 
-1. Users have no problem using CLI.
+1. Users are comfortable using CLI, but they are not that technical so interactions are designed in a humanly way instead of using command argument options.
 
 2. Memory is sufficient for storing all the data.
 
-3. Optional fields are observed from the json files provided.
+3. No value of 'quit' exist in the data, otherwise it will contradict with the requirement 'Exit anytime'.
+
+4. Optional fields are observed from the json files provided.
 
     ### User
 
@@ -64,3 +88,44 @@ python -m zensearch
     | subject | * **required**<br/>* string |
     | assignee_id | * optional<br/>* int<br/>* default `None` |
     | tags | * **required**<br/>* list of string |
+
+
+## Scalability
+
+Uses MVC structure to reduce coupling.
+
+* Model - `database.py`
+    
+* View - `cli.py`
+
+* Controller - `__main__.py`
+
+* Constants - `constants.py`, `config.py`
+
+<br/>
+
+1. No changes to CLI required for changes of searchable fields.
+
+    You only need to update the enum in `constants.py`
+
+2. Easy to switch to use a database in the future.
+
+    You only need to update the implementation of `database.py`
+
+3. Use constants to prevent hardcoded string
+
+## Future thoughts
+
+1. Use date type instead of string for `created_at`
+
+    It's ridiculous to use a date time format string to search.
+
+    And date type allows more flexible searches like date range and provides better support for multi-timezone.
+
+2. Cache on demand
+
+    Another way to cache is storing them when they are searched along with an expiration time.
+
+    It can reduce startup time and memory used in runtime comparing to the current cache strategy.
+
+    This can be beneficial if the number of frequently searched items is very small.
