@@ -245,7 +245,7 @@ class Database:
             result: list - A list of tickets found ( [Ticket] | [ ] )
         """
         if self.config.CACHE_TICKET_CREATED_AT:
-            if created_at in self.cache_user_created_at:
+            if created_at in self.cache_ticket_created_at:
                 return self.cache_ticket_created_at[created_at]
             else:
                 return []
