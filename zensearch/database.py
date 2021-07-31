@@ -1,13 +1,13 @@
 import json
-from columnar import columnar
 from zensearch.constants import USER_JSON, TICKET_JSON
-from zensearch.config import *
+from zensearch.config import Config
 
 
 class Database:
     def __init__(self) -> None:
         self.users = None
         self.tickets = None
+        self.config = Config()
         # User cache
         self.cache_user_created_at = {}
         self.cache_user_name = {}
@@ -82,21 +82,21 @@ class Database:
     def cache_user(self, user) -> None:
         """Create reverse indexes for user data"""
         # A user list by the given created_at
-        if CACHE_USER_CREATED_AT:
+        if self.config.CACHE_USER_CREATED_AT:
             if user.created_at in self.cache_user_created_at:
                 self.cache_user_created_at[user.created_at].append(user)
             else:
                 self.cache_user_created_at[user.created_at] = [user]
 
         # A user list by the given name
-        if CACHE_USER_NAME:
+        if self.config.CACHE_USER_NAME:
             if user.name in self.cache_user_name:
                 self.cache_user_name[user.name].append(user)
             else:
                 self.cache_user_name[user.name] = [user]
 
         # A user list by the given verified
-        if CACHE_USER_VERIFIED:
+        if self.config.CACHE_USER_VERIFIED:
             if user.verified in self.cache_user_verified:
                 self.cache_user_verified[user.verified].append(user)
             else:
@@ -105,28 +105,28 @@ class Database:
     def cache_ticket(self, ticket) -> None:
         """Create reverse indexes for ticket data"""
         # A ticket list by the given created_at
-        if CACHE_TICKET_CREATED_AT:
+        if self.config.CACHE_TICKET_CREATED_AT:
             if ticket.created_at in self.cache_ticket_created_at:
                 self.cache_ticket_created_at[ticket.created_at].append(ticket)
             else:
                 self.cache_ticket_created_at[ticket.created_at] = [ticket]
 
         # A ticket list by the given type
-        if CACHE_TICKET_TYPE:
+        if self.config.CACHE_TICKET_TYPE:
             if ticket.type in self.cache_ticket_type:
                 self.cache_ticket_type[ticket.type].append(ticket)
             else:
                 self.cache_ticket_type[ticket.type] = [ticket]
 
         # A ticket list by the given subject
-        if CACHE_TICKET_SUBJECT:
+        if self.config.CACHE_TICKET_SUBJECT:
             if ticket.subject in self.cache_ticket_subject:
                 self.cache_ticket_subject[ticket.subject].append(ticket)
             else:
                 self.cache_ticket_subject[ticket.subject] = [ticket]
 
         # A ticket list by the given assignee_id
-        if CACHE_TICKET_ASSIGNEE_ID:
+        if self.config.CACHE_TICKET_ASSIGNEE_ID:
             if ticket.assignee_id in self.cache_ticket_assignee_id:
                 self.cache_ticket_assignee_id[ticket.assignee_id].append(
                     ticket)
@@ -134,7 +134,7 @@ class Database:
                 self.cache_ticket_assignee_id[ticket.assignee_id] = [ticket]
 
         # A ticket list by the given tags
-        if CACHE_TICKET_TAGS:
+        if self.config.CACHE_TICKET_TAGS:
             # Iterate through the tag list
             for tag in ticket.tags:
                 # Cache per tag
@@ -172,7 +172,7 @@ class Database:
         Returns:
             result: list - A list of users found ( [User] | [ ] )
         """
-        if CACHE_USER_NAME:
+        if self.config.CACHE_USER_NAME:
             if name in self.cache_user_name:
                 return self.cache_user_name[name]
             else:
@@ -191,7 +191,7 @@ class Database:
         Returns:
             result: list - A list of users found ( [User] | [ ] )
         """
-        if CACHE_USER_CREATED_AT:
+        if self.config.CACHE_USER_CREATED_AT:
             if created_at in self.cache_user_created_at:
                 return self.cache_user_created_at[created_at]
             else:
@@ -209,7 +209,7 @@ class Database:
         Returns:
             result: list - A list of users found ( [User] | [ ] )
         """
-        if CACHE_USER_CREATED_AT:
+        if self.config.CACHE_USER_VERIFIED:
             return self.cache_user_verified[verified]
         else:
             return [user for user in self.users.values() if user.verified == verified]
@@ -244,7 +244,7 @@ class Database:
         Returns:
             result: list - A list of tickets found ( [Ticket] | [ ] )
         """
-        if CACHE_TICKET_CREATED_AT:
+        if self.config.CACHE_TICKET_CREATED_AT:
             if created_at in self.cache_user_created_at:
                 return self.cache_ticket_created_at[created_at]
             else:
@@ -262,7 +262,7 @@ class Database:
         Returns:
             result: list - A list of tickets found ( [Ticket] | [ ] )
         """
-        if CACHE_TICKET_TYPE:
+        if self.config.CACHE_TICKET_TYPE:
             if type in self.cache_ticket_type:
                 return self.cache_ticket_type[type]
             else:
@@ -280,7 +280,7 @@ class Database:
         Returns:
             result: list - A list of tickets found ( [Ticket] | [ ] )
         """
-        if CACHE_TICKET_SUBJECT:
+        if self.config.CACHE_TICKET_SUBJECT:
             if subject in self.cache_ticket_subject:
                 return self.cache_ticket_subject[subject]
             else:
@@ -298,7 +298,7 @@ class Database:
         Returns:
             result: list - A list of tickets found ( [Ticket] | [ ] )
         """
-        if CACHE_TICKET_ASSIGNEE_ID:
+        if self.config.CACHE_TICKET_ASSIGNEE_ID:
             if a_id in self.cache_ticket_assignee_id:
                 return self.cache_ticket_assignee_id[a_id]
             else:
@@ -316,7 +316,7 @@ class Database:
         Returns:
             result: list - A list of tickets found ( [Ticket] | [ ] )
         """
-        if CACHE_TICKET_TAGS:
+        if self.config.CACHE_TICKET_TAGS:
             if tag in self.cache_ticket_tags:
                 return self.cache_ticket_tags[tag]
             else:

@@ -40,6 +40,103 @@ def test_database_init():
     assert db.users is not None
     assert db.tickets is not None
 
+def test_database_cache_user():
+    db = Database()
+    user = User(1, 'Yalu', 'today', True)
+    db.config.CACHE_USER_CREATED_AT = False
+    db.config.CACHE_USER_NAME = False
+    db.config.CACHE_USER_VERIFIED = False
+    db.cache_user(user)
+    assert db.cache_user_created_at  == {}
+    assert db.cache_user_name == {}
+    assert db.cache_user_verified == {}
+    db.config.CACHE_USER_CREATED_AT = True
+    db.cache_user(user)
+    assert db.cache_user_created_at != {}
+    assert len(db.cache_user_created_at) == 1
+    assert db.cache_user_name == {}
+    assert db.cache_user_verified == {}
+    db.config.CACHE_USER_NAME = True
+    db.cache_user(user)
+    assert db.cache_user_created_at != {}
+    assert len(db.cache_user_created_at) == 1
+    assert db.cache_user_name != {}
+    assert len(db.cache_user_name) == 1
+    assert db.cache_user_verified == {}
+    db.config.CACHE_USER_VERIFIED = True
+    db.cache_user(user)
+    assert db.cache_user_created_at != {}
+    assert len(db.cache_user_created_at) == 1
+    assert db.cache_user_name != {}
+    assert len(db.cache_user_name) == 1
+    assert db.cache_user_verified != {}
+    assert len(db.cache_user_verified) == 1
+
+def test_database_cache_ticket():
+    db = Database()
+    ticket = Ticket('1', 'today', 'There is no subject', ['test'])
+    db.config.CACHE_TICKET_CREATED_AT = False
+    db.config.CACHE_TICKET_SUBJECT = False
+    db.config.CACHE_TICKET_TAGS = False
+    db.config.CACHE_TICKET_TYPE = False
+    db.config.CACHE_TICKET_ASSIGNEE_ID = False
+    db.cache_ticket(ticket)
+    assert db.cache_ticket_created_at == {}
+    assert db.cache_ticket_subject == {}
+    assert db.cache_ticket_tags == {}
+    assert db.cache_ticket_type == {}
+    assert db.cache_ticket_assignee_id == {}
+    db.config.CACHE_TICKET_CREATED_AT = True
+    db.cache_ticket(ticket)
+    assert db.cache_ticket_created_at != {}
+    assert len(db.cache_ticket_created_at) == 1
+    assert db.cache_ticket_subject == {}
+    assert db.cache_ticket_tags == {}
+    assert db.cache_ticket_type == {}
+    assert db.cache_ticket_assignee_id == {}
+    db.config.CACHE_TICKET_SUBJECT = True
+    db.cache_ticket(ticket)
+    assert db.cache_ticket_created_at != {}
+    assert len(db.cache_ticket_created_at) == 1
+    assert db.cache_ticket_subject != {}
+    assert len(db.cache_ticket_subject) == 1
+    assert db.cache_ticket_tags == {}
+    assert db.cache_ticket_type == {}
+    assert db.cache_ticket_assignee_id == {}
+    db.config.CACHE_TICKET_TAGS = True
+    db.cache_ticket(ticket)
+    assert db.cache_ticket_created_at != {}
+    assert len(db.cache_ticket_created_at) == 1
+    assert db.cache_ticket_subject != {}
+    assert len(db.cache_ticket_subject) == 1
+    assert db.cache_ticket_tags != {}
+    assert len(db.cache_ticket_tags) == 1
+    assert db.cache_ticket_type == {}
+    assert db.cache_ticket_assignee_id == {}
+    db.config.CACHE_TICKET_TYPE = True
+    db.cache_ticket(ticket)
+    assert db.cache_ticket_created_at != {}
+    assert len(db.cache_ticket_created_at) == 1
+    assert db.cache_ticket_subject != {}
+    assert len(db.cache_ticket_subject) == 1
+    assert db.cache_ticket_tags != {}
+    assert len(db.cache_ticket_tags) == 1
+    assert db.cache_ticket_type != {}
+    assert len(db.cache_ticket_type) == 1
+    assert db.cache_ticket_assignee_id == {}
+    db.config.CACHE_TICKET_ASSIGNEE_ID = True
+    db.cache_ticket(ticket)
+    assert db.cache_ticket_created_at != {}
+    assert len(db.cache_ticket_created_at) == 1
+    assert db.cache_ticket_subject != {}
+    assert len(db.cache_ticket_subject) == 1
+    assert db.cache_ticket_tags != {}
+    assert len(db.cache_ticket_tags) == 1
+    assert db.cache_ticket_type != {}
+    assert len(db.cache_ticket_type) == 1
+    assert db.cache_ticket_assignee_id != {}
+    assert len(db.cache_ticket_assignee_id) == 1
+
 def test_search_user_id():
     db = Database()
     db.init()
@@ -54,7 +151,16 @@ def test_search_user_id():
 
 def test_search_user_name():
     db = Database()
+    db.config.CACHE_USER_NAME = False
     db.init()
+    assert db.cache_user_name == {}
+    assert all(x.name == 'Key Mendez' for x in db.search_user_name('Key Mendez'))
+    assert db.search_user_name('Lu Yang') == []
+    assert db.search_user_name('') == []
+    assert db.search_user_name(None) == []
+    db.config.CACHE_USER_NAME = True
+    db.init()
+    assert db.cache_user_name != {}
     assert all(x.name == 'Key Mendez' for x in db.search_user_name('Key Mendez'))
     assert db.search_user_name('Lu Yang') == []
     assert db.search_user_name('') == []
@@ -62,7 +168,16 @@ def test_search_user_name():
 
 def test_search_user_created_at():
     db = Database()
+    db.config.CACHE_USER_CREATED_AT = False
     db.init()
+    assert db.cache_user_created_at == {}
+    assert all(x.created_at == '2016-07-04T10:28:16-10:00' for x in db.search_user_created_at('2016-07-04T10:28:16-10:00'))
+    assert db.search_user_created_at('2077') == []
+    assert db.search_user_created_at('') == []
+    assert db.search_user_created_at(None) == []
+    db.config.CACHE_USER_CREATED_AT = True
+    db.init()
+    assert db.cache_user_created_at != {}
     assert all(x.created_at == '2016-07-04T10:28:16-10:00' for x in db.search_user_created_at('2016-07-04T10:28:16-10:00'))
     assert db.search_user_created_at('2077') == []
     assert db.search_user_created_at('') == []
@@ -70,7 +185,14 @@ def test_search_user_created_at():
 
 def test_search_user_verified():
     db = Database()
+    db.config.CACHE_USER_VERIFIED = False
     db.init()
+    assert db.cache_user_verified == {}
+    assert all(x.verified == True for x in db.search_user_verified(True))
+    assert all(x.verified == False for x in db.search_user_verified(False))
+    db.config.CACHE_USER_VERIFIED = True
+    db.init()
+    assert db.cache_user_verified != {}
     assert all(x.verified == True for x in db.search_user_verified(True))
     assert all(x.verified == False for x in db.search_user_verified(False))
 
@@ -88,7 +210,16 @@ def test_search_ticket_id():
 
 def test_search_ticket_created_at():
     db = Database()
+    db.config.CACHE_TICKET_CREATED_AT = False
     db.init()
+    assert db.cache_ticket_created_at == {}
+    assert all(x.created_at == '2016-03-30T08:35:27-11:00' for x in db.search_user_created_at('2016-03-30T08:35:27-11:00'))
+    assert db.search_user_created_at('2077') == []
+    assert db.search_user_created_at('') == []
+    assert db.search_user_created_at(None) == []
+    db.config.CACHE_TICKET_CREATED_AT = True
+    db.init()
+    assert db.cache_ticket_created_at != {}
     assert all(x.created_at == '2016-03-30T08:35:27-11:00' for x in db.search_user_created_at('2016-03-30T08:35:27-11:00'))
     assert db.search_user_created_at('2077') == []
     assert db.search_user_created_at('') == []
@@ -96,7 +227,18 @@ def test_search_ticket_created_at():
 
 def test_search_ticket_type():
     db = Database()
+    db.config.CACHE_TICKET_TYPE = False
     db.init()
+    assert db.cache_ticket_type == {}
+    assert all(x.type == 'task' for x in db.search_ticket_type('task'))
+    # Ensure all tickets with no type is stored as None instead of empty string
+    assert all(ticket.type != '' for ticket in db.tickets.values())
+    assert all(x.type is None for x in db.search_ticket_type(None))
+    assert all(x.type is None for x in db.search_ticket_type(''))
+    assert db.search_ticket_type('????') == []
+    db.config.CACHE_TICKET_TYPE = True
+    db.init()
+    assert db.cache_ticket_type != {}
     assert all(x.type == 'task' for x in db.search_ticket_type('task'))
     # Ensure all tickets with no type is stored as None instead of empty string
     assert all(ticket.type != '' for ticket in db.tickets.values())
@@ -106,7 +248,16 @@ def test_search_ticket_type():
 
 def test_search_ticket_subject():
     db = Database()
+    db.config.CACHE_TICKET_SUBJECT = False
     db.init()
+    assert db.cache_ticket_subject == {}
+    assert all(x.subject == 'A Problem in Malawi' for x in db.search_ticket_subject('A Problem in Malawi'))
+    assert db.search_ticket_subject('This cannot be a subject title!') == []
+    assert db.search_ticket_subject('') == []
+    assert db.search_ticket_subject(None) == []
+    db.config.CACHE_TICKET_SUBJECT = True
+    db.init()
+    assert db.cache_ticket_subject != {}
     assert all(x.subject == 'A Problem in Malawi' for x in db.search_ticket_subject('A Problem in Malawi'))
     assert db.search_ticket_subject('This cannot be a subject title!') == []
     assert db.search_ticket_subject('') == []
@@ -114,7 +265,17 @@ def test_search_ticket_subject():
 
 def test_search_ticket_assignee_id():
     db = Database()
+    db.config.CACHE_TICKET_ASSIGNEE_ID = False
     db.init()
+    assert db.cache_ticket_assignee_id == {}
+    assert all(x.assignee_id == 1 for x in db.search_ticket_assignee_id(1))
+    assert len(db.search_ticket_assignee_id(1)) == 2
+    assert all(x.assignee_id == None for x in db.search_ticket_assignee_id(None))
+    assert db.search_ticket_assignee_id(0) == []
+    assert db.search_ticket_assignee_id('') == []
+    db.config.CACHE_TICKET_ASSIGNEE_ID = True
+    db.init()
+    assert db.cache_ticket_assignee_id != {}
     assert all(x.assignee_id == 1 for x in db.search_ticket_assignee_id(1))
     assert len(db.search_ticket_assignee_id(1)) == 2
     assert all(x.assignee_id == None for x in db.search_ticket_assignee_id(None))
@@ -123,7 +284,16 @@ def test_search_ticket_assignee_id():
 
 def test_search_ticket_tags():
     db = Database()
+    db.config.CACHE_TICKET_TAGS = False
     db.init()
+    assert db.cache_ticket_tags == {}
+    assert all('New Mexico' in x.tags for x in db.search_ticket_tags('New Mexico'))
+    assert db.search_ticket_tags(0) == []
+    assert db.search_ticket_tags('') == []
+    assert db.search_ticket_tags(None) == []
+    db.config.CACHE_TICKET_TAGS = True
+    db.init()
+    assert db.cache_ticket_tags != {}
     assert all('New Mexico' in x.tags for x in db.search_ticket_tags('New Mexico'))
     assert db.search_ticket_tags(0) == []
     assert db.search_ticket_tags('') == []
