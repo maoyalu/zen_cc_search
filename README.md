@@ -9,7 +9,7 @@ Submission for Coding Challenge
 
 ## Prerequisites
 
-1. To run this CLI application, you should have `Python 3.x` and `pip` installed and configured to use.
+1. To run this CLI application, you should have `Python 3.9`(latest) and `pip` installed and configured to use.
 
     You can download it here:
 
