@@ -1,5 +1,4 @@
 import json
-from zensearch.constants import USER_JSON, TICKET_JSON
 from zensearch.config import Config
 
 
@@ -30,7 +29,7 @@ class Database:
         '''Initialize user data'''
         user_dict = {}
         try:
-            with open(USER_JSON) as file:
+            with open(self.config.USER_JSON) as file:
                 users = json.load(file)
                 for user in users:
                     _id = user['_id']
@@ -53,7 +52,7 @@ class Database:
         '''Initialize ticket data'''
         ticket_dict = {}
         try:
-            with open(TICKET_JSON) as file:
+            with open(self.config.TICKET_JSON) as file:
                 tickets = json.load(file)
                 for ticket in tickets:
                     _id = ticket['_id']

@@ -11,6 +11,10 @@ class Config:
 
     """
 
+    # Data json files
+    USER_JSON = 'zensearch/data/users.json'
+    TICKET_JSON = 'zensearch/data/tickets.json'
+
     # region User caching
 
     # Enable reverse lookup users using name

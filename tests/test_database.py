@@ -1,5 +1,4 @@
 from zensearch.database import *
-import zensearch.config as config
 
 
 def test_database():
@@ -22,6 +21,9 @@ def test_database_user_init():
     db.user_init()
     assert db.users is not None
     assert db.tickets is None
+    # Exception is handled when the file doesn't exist
+    db.config.USER_JSON = ''
+    db.user_init()
 
 def test_database_ticket_init():
     db = Database()
@@ -31,6 +33,9 @@ def test_database_ticket_init():
     db.user_init()
     db.ticket_init()
     assert db.tickets is not None
+    # Exception is handled when the file doesn't exist
+    db.config.TICKET_JSON = ''
+    db.ticket_init()
 
 def test_database_init():
     db = Database()
@@ -213,14 +218,14 @@ def test_search_ticket_created_at():
     db.config.CACHE_TICKET_CREATED_AT = False
     db.init()
     assert db.cache_ticket_created_at == {}
-    assert all(x.created_at == '2016-06-23T10:31:39-10:00' for x in db.search_ticket_created_at('2016-06-23T10:31:39-10:00'))
+    assert all(x.created_at == '2016-04-28T11:19:34-10:00' for x in db.search_ticket_created_at('2016-04-28T11:19:34-10:00'))
     assert db.search_ticket_created_at('2077') == []
     assert db.search_ticket_created_at('') == []
     assert db.search_ticket_created_at(None) == []
     db.config.CACHE_TICKET_CREATED_AT = True
     db.init()
     assert db.cache_ticket_created_at != {}
-    assert all(x.created_at == '22016-06-23T10:31:39-10:00' for x in db.search_ticket_created_at('2016-06-23T10:31:39-10:00'))
+    assert all(x.created_at == '2016-04-28T11:19:34-10:00' for x in db.search_ticket_created_at('2016-04-28T11:19:34-10:00'))
     assert db.search_ticket_created_at('2077') == []
     assert db.search_ticket_created_at('') == []
     assert db.search_ticket_created_at(None) == []
