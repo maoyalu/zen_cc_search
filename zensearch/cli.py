@@ -6,16 +6,16 @@ class CLI:
     def __init__(self) -> None:
         pass
 
-    def main(self):
+    def main(self) -> str:
         """ZENDESK search - main page.
 
-        Returned options:
+        Returns: ( '1' | '2' | None )
 
-            1 - zendesk search
+            '1' - zendesk search
 
-            2 - view searchable fields
+            '2' - view searchable fields
 
-            quit - Exit the app
+            None - attempted to quit
         """
         click.echo("""
   _____ U _____ u _   _    ____  U _____ u ____       _  __    
@@ -40,7 +40,7 @@ Search options:
         else:
             return op
 
-    def view_searchable_fields(self):
+    def view_searchable_fields(self) -> None:
         """Display searchable fields for users and tickets."""
         click.echo("""
 ----------------------
@@ -57,16 +57,15 @@ Search {} with
 
         self.wait()
 
-    def search(self):
+    def search(self) -> str:
         """ZENDESK search - search page.
 
-        Returned options:
+        Returns:  ( '1' | '2' | None )
+            '1' - Users
 
-            1 - Users
+            '2' - Tickets
 
-            2 - Tickets
-
-            quit - Exit the app
+            None - attempted to quit
         """
         click.echo("""
 Press the number to search:
@@ -79,7 +78,15 @@ Press the number to search:
         else:
             return op
 
-    def search_target(self, target, param_enum):
+    def search_target(self, target, param_enum) -> tuple[int, str]:
+        """Get search term and value from the user
+
+        Returns: ( (None, None) | (term, value) )
+            (term, value)
+                term: int - the field number used in the param enum class
+                value: str - the input value of the term
+            (None, None) - Attempted to quit or got an invalid input
+        """
         click.echo("""
 ----------------------
 Search {0} with
@@ -105,11 +112,16 @@ Search {0} with
             self.error_invalid_option()
             return None, None
 
-    def display_search_result(self, result):
+    def display_search_result(self, result: str) -> None:
+        """Display search result string
+        
+        Parameters:
+            results: str - search result
+        """
         click.echo(result)
         self.wait()
 
-    def exit(self):
+    def exit(self) -> None:
         """Require confirmation before exiting app."""
         confirmed = click.confirm('The app is shutting down. Are you sure?')
         if confirmed:
@@ -131,13 +143,23 @@ Search {0} with
                       prompt_suffix='',
                       show_default=False)
 
-    def is_quit(self, op):
-        """Check every prompt input for quit request."""
+    def is_quit(self, op: str) -> bool:
+        """Check every prompt input for quit request.
+        
+        Parameters:
+            op: str - The input option string from the user
+        """
         if op == 'quit':
             self.exit()
         return op == 'quit'
 
-    def is_valid_field(self, op, param_enum):
+    def is_valid_field(self, op: str, param_enum) -> bool:
+        """Check if selectd option is a valid field for the search target
+
+        Parameters:
+            op: str - The input option string from the user
+            param_enum - A enum of valid all fields
+        """
         try:
             # Option should be an integer
             op = int(op)
