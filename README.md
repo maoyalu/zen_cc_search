@@ -34,13 +34,13 @@ cd zen_cc_search
 2. Restore project requirements
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 3. Run
 
 ```bash
-python -m zensearch
+python3 -m zensearch
 ```
 
 ## How to use
