@@ -213,17 +213,17 @@ def test_search_ticket_created_at():
     db.config.CACHE_TICKET_CREATED_AT = False
     db.init()
     assert db.cache_ticket_created_at == {}
-    assert all(x.created_at == '2016-03-30T08:35:27-11:00' for x in db.search_user_created_at('2016-03-30T08:35:27-11:00'))
-    assert db.search_user_created_at('2077') == []
-    assert db.search_user_created_at('') == []
-    assert db.search_user_created_at(None) == []
+    assert all(x.created_at == '2016-03-30T08:35:27-11:00' for x in db.search_ticket_created_at('2016-03-30T08:35:27-11:00'))
+    assert db.search_ticket_created_at('2077') == []
+    assert db.search_ticket_created_at('') == []
+    assert db.search_ticket_created_at(None) == []
     db.config.CACHE_TICKET_CREATED_AT = True
     db.init()
     assert db.cache_ticket_created_at != {}
-    assert all(x.created_at == '2016-03-30T08:35:27-11:00' for x in db.search_user_created_at('2016-03-30T08:35:27-11:00'))
-    assert db.search_user_created_at('2077') == []
-    assert db.search_user_created_at('') == []
-    assert db.search_user_created_at(None) == []
+    assert all(x.created_at == '2016-03-30T08:35:27-11:00' for x in db.search_ticket_created_at('2016-03-30T08:35:27-11:00'))
+    assert db.search_ticket_created_at('2077') == []
+    assert db.search_ticket_created_at('') == []
+    assert db.search_ticket_created_at(None) == []
 
 def test_search_ticket_type():
     db = Database()
