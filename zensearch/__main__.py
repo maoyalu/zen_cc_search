@@ -1,3 +1,4 @@
+import columnar
 from zensearch.database import *
 from zensearch.cli import *
 from zensearch.constants import UserParam, TicketParam, SearchTarget
